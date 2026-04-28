@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Focus Todo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-label="Todo app">
+        <div class="header-row">
+          <div>
+            <p class="eyebrow">Today</p>
+            <h1>Focus Todo</h1>
+          </div>
+          <div class="progress-card" aria-live="polite">
+            <span id="doneCount">0</span>
+            <small>done</small>
+          </div>
+        </div>
+
+        <form id="todoForm" class="todo-form">
+          <label class="sr-only" for="todoInput">New task</label>
+          <input
+            id="todoInput"
+            type="text"
+            maxlength="80"
+            autocomplete="off"
+            placeholder="Add a task..."
+            required
+          />
+          <button type="submit">Add</button>
+        </form>
+
+        <div class="toolbar" aria-label="Todo filters">
+          <button class="filter is-active" type="button" data-filter="all">All</button>
+          <button class="filter" type="button" data-filter="active">Active</button>
+          <button class="filter" type="button" data-filter="done">Done</button>
+          <button id="clearDone" class="quiet-button" type="button">Clear done</button>
+        </div>
+
+        <ul id="todoList" class="todo-list" aria-label="Tasks"></ul>
+
+        <p id="emptyState" class="empty-state">No tasks yet. Add one and give the day a shape.</p>
+      </section>
+    </main>
+
+    <template id="todoTemplate">
+      <li class="todo-item">
+        <label>
+          <input class="toggle" type="checkbox" />
+          <span class="task-text"></span>
+        </label>
+        <button class="delete-button" type="button" aria-label="Delete task">Delete</button>
+      </li>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
