@@ -48,13 +48,51 @@ list.addEventListener("change", (event) => {
 });
 
 list.addEventListener("click", (event) => {
-  if (!event.target.matches(".delete-button")) {
+  const item = event.target.closest(".todo-item");
+
+  if (!item) {
+    return;
+  }
+
+  if (event.target.matches(".task-text")) {
+    startEditing(item);
+    return;
+  }
+
+  if (event.target.matches(".delete-button")) {
+    todos = todos.filter((todo) => todo.id !== item.dataset.id);
+    saveAndRender();
+  }
+});
+
+list.addEventListener("focusin", (event) => {
+  if (event.target.matches(".task-text")) {
+    startEditing(event.target.closest(".todo-item"));
+  }
+});
+
+list.addEventListener("focusout", (event) => {
+  if (event.target.matches(".edit-input")) {
+    saveEdit(event.target.closest(".todo-item"));
+  }
+});
+
+list.addEventListener("keydown", (event) => {
+  if (!event.target.matches(".edit-input")) {
     return;
   }
 
   const item = event.target.closest(".todo-item");
-  todos = todos.filter((todo) => todo.id !== item.dataset.id);
-  saveAndRender();
+
+  if (event.key === "Enter") {
+    event.preventDefault();
+    event.target.blur();
+  }
+
+  if (event.key === "Escape") {
+    event.preventDefault();
+    render();
+  }
 });
 
 clearDone.addEventListener("click", () => {
@@ -89,11 +127,13 @@ function render() {
     const node = template.content.firstElementChild.cloneNode(true);
     const checkbox = node.querySelector(".toggle");
     const text = node.querySelector(".task-text");
+    const editInput = node.querySelector(".edit-input");
 
     node.dataset.id = todo.id;
     node.classList.toggle("is-done", todo.done);
     checkbox.checked = todo.done;
     text.textContent = todo.text;
+    editInput.value = todo.text;
     list.append(node);
   });
 
@@ -106,6 +146,32 @@ function render() {
 function saveAndRender() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
   render();
+}
+
+function startEditing(item) {
+  const editInput = item.querySelector(".edit-input");
+
+  item.classList.add("is-editing");
+  editInput.focus();
+  editInput.select();
+}
+
+function saveEdit(item) {
+  const editInput = item.querySelector(".edit-input");
+  const updatedText = editInput.value.trim();
+  const todo = todos.find((entry) => entry.id === item.dataset.id);
+
+  if (!todo) {
+    return;
+  }
+
+  if (!updatedText) {
+    render();
+    return;
+  }
+
+  todo.text = updatedText;
+  saveAndRender();
 }
 
 function loadTodos() {

@@ -86,7 +86,7 @@ h1 {
 
 .todo-form {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
 }
 
@@ -183,6 +183,15 @@ h1 {
 .task-text {
   overflow-wrap: anywhere;
   font-weight: 700;
+  cursor: text;
+  border-radius: 6px;
+  padding: 4px 2px;
+}
+
+.task-text:hover,
+.task-text:focus {
+  background: rgba(57, 106, 108, 0.1);
+  outline: 0;
 }
 
 .todo-item.is-done .task-text {
@@ -190,11 +199,37 @@ h1 {
   text-decoration: line-through;
 }
 
+.edit-input {
+  display: none;
+  min-width: 0;
+  width: 100%;
+  border: 1px solid rgba(35, 35, 35, 0.18);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.edit-input:focus {
+  border-color: #396a6c;
+  outline: 3px solid rgba(57, 106, 108, 0.18);
+}
+
 .delete-button {
   min-height: 34px;
   padding: 0 10px;
   background: #f0e7dc;
   color: #6b2b1e;
+}
+
+.todo-item.is-editing {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.todo-item.is-editing label {
+  display: none;
+}
+
+.todo-item.is-editing .edit-input {
+  display: block;
 }
 
 .empty-state {
@@ -225,6 +260,10 @@ h1 {
   .header-row,
   .todo-form,
   .todo-item {
+    grid-template-columns: 1fr;
+  }
+
+  .todo-item.is-editing {
     grid-template-columns: 1fr;
   }
 
